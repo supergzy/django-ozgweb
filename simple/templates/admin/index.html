@@ -1,11 +1,11 @@
 ﻿<!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en">
     <head>
         <meta charset="utf-8" />
         <title>{{ res_data.title }} - 后台登陆</title>
-        <link rel="stylesheet" href="../../static/simple/css/alogin_reset.css" />
-        <link rel="stylesheet" href="../../static/simple/css/alogin_supersized.css" />
-        <link rel="stylesheet" href="../../static/simple/css/alogin_style.css" />
+        <link rel="stylesheet" href="../../static/simple/css/a_login_reset.css" />
+        <link rel="stylesheet" href="../../static/simple/css/a_login_supersized.css" />
+        <link rel="stylesheet" href="../../static/simple/css/a_login_style.css" />
 
         <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -15,24 +15,20 @@
         <script src="../../static/simple/js/supersized.3.2.7.min.js" ></script>
         <script src="../../static/simple/js/supersized-init.js" ></script>
         <script src="../../static/simple/js/scripts.js" ></script>
+		<script src="../../static/simple/js/md5.js" ></script>
+		<script src="../../static/simple/js/a_index.js" ></script>
     </head>
     <body>
         <div class="page-container">
             <h1>后台管理登陆</h1>
-            <form action="" method="post">
+            <form action="" method="post" id="main_form">
                 <input type="text" name="username" class="username" placeholder="请输入您的用户名！" />
                 <input type="password" name="password" class="password" placeholder="请输入您的用户密码！" />
-                <input type="Captcha" class="Captcha" name="Captcha" class="Captcha" placeholder="请输入验证码！" />
+                <input type="Captcha" class="Captcha" name="Captcha" placeholder="请输入验证码！" />
+				<a href="#" id="get_code_img"><img src="get_code" class="getcode" /></a>
                 <button type="submit" class="submit_button">登录</button>
                 <div class="error"><span>+</span></div>
             </form>
-            <!--<div class="connect">
-                <p>快捷</p>
-                <p>
-                    <a class="facebook" href=""></a>
-                    <a class="twitter" href=""></a>
-                </p>
-            </div>-->
         </div>
     </body>
 </html>

@@ -1,4 +1,4 @@
-/*
+﻿/*
 
 	Supersized - Fullscreen Slideshow jQuery Plugin
 	Version : 3.2.7
