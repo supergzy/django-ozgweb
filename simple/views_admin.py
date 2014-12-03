@@ -54,9 +54,9 @@ def ajax_login(request):
 		
 		name = request.GET.get("name")
 		pwd = request.GET.get("pwd")
-
-		admin = Admin.objects.get(name = name, pwd = pwd)
-		if admin:		
+		
+		try:
+			admin = Admin.objects.get(name = name, pwd = pwd)
 			admin_jsonstr = admin.toJSON()
 			admin = json.loads(admin_jsonstr)
 			
@@ -65,8 +65,9 @@ def ajax_login(request):
 			request.session["sess_admin"] = admin
 			
 			return commons.res_success("登录成功")
-		else:
+		except:
 			return commons.res_fail(1, "用户或密码不正确")
+			
 	else:
 		return commons.res_fail(1, "验证码不正确")
 
@@ -84,7 +85,7 @@ def ajax_admin_list(request):
 		return commons.res_fail(1, "需要登录才可以访问")
 	
 	admin_list = Admin.objects.all()
-	return commons.res_success("退出登录", admin_list)
+	return commons.res_success("请求成功", admin_list)
 
 def ajax_admin_add(request):
 	#需要登录才可以访问
@@ -113,12 +114,13 @@ def ajax_admin_del(request, id):
 		return commons.res_fail(1, "需要登录才可以访问")
 	
 	id = request.REQUEST.get("id")
-	admin = Admin.objects.get(id = id)
-	if not admin:
+		
+	try:
+		admin = Admin.objects.get(id = id)
+		admin.delete()
+		return commons.res_success("删除成功")
+	except:
 		return commons.res_fail(1, "该数据不存在")
-	
-	admin.delete()
-	return commons.res_success("删除成功")
 
 def ajax_admin_updatepwd(request):
 	#需要登录才可以访问
@@ -133,14 +135,14 @@ def ajax_admin_updatepwd(request):
 	if pwd != pwd2:
 		return commons.res_fail(1, "确认密码不正确")
 	
-	admin = Admin.objects.filter(name = curr_admin.name, pwd = old_pwd)
-	if not admin:
+	try:
+		admin = Admin.objects.filter(name = curr_admin.name, pwd = old_pwd)
+		admin.pwd = pwd
+		admin.save()
+	
+		return commons.res_success("修改密码成功")
+	except:
 		return commons.res_fail(1, "旧密码不正确")
-	
-	admin.pwd = pwd
-	admin.save()
-	
-	return commons.res_success("修改密码成功")
 
 def ajax_art_single_get(request, id):
 	#需要登录才可以访问
@@ -169,28 +171,60 @@ def ajax_dataclass_list(request):
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
 
-	pass
+	dataclass_list = Admin.objects.filter(parent_id = 0)
+	return commons.res_success("请求成功", dataclass_list)
 
 def ajax_dataclass_get(request, id):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
-
-	pass
+		
+	try:
+		dataclass = DataClass.objects.get(id = id)
+		return commons.res_success("请求成功", json.loads(data.toJSON()))
+	except:
+		return commons.res_fail(1, "找不到该数据")
 
 def ajax_dataclass_add(request, id = 0):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
-
-	pass
+	
+	name = request.REQUEST.get("name")
+	parent_id = request.REQUEST.get("parent_id")
+	
+	dataclass = None
+	if id != 0:
+		dataclass = DataClass.objects.get(id = id)
+	else:
+		dataclass = DataClass()
+	
+	dataclass.name = name
+	dataclass.parent_id = parent_id
+	data.sort = request.REQUEST.get("sort")
+	data.type = request.REQUEST.get("type")
+	data.save()
+	
+	if id != 0:
+		return commons.res_success("更新成功")
+	else:
+		return commons.res_success("添加成功")
 
 def ajax_dataclass_del(request, id):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
-
-	pass
+	
+	id = request.REQUEST.get("id")
+	try:
+		dataclass = DataClass.objects.get(id = id)
+		
+		#删除该分类下面的对应数据
+		
+		dataclass.delete()
+		return commons.res_success("删除成功")
+	except:
+		return commons.res_fail(1, "该数据不存在")
 
 def ajax_data_list(request, page = 1, page_size = 10):
 	#需要登录才可以访问
@@ -209,13 +243,13 @@ def ajax_data_get(request, id):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
-	
-	data = Data.objects.get(id = id)
-	if not data:
+		
+	try:
+		data = Data.objects.get(id = id)
+		return commons.res_success("请求成功", json.loads(data.toJSON()))
+	except:
 		return commons.res_fail(1, "找不到该数据")
-	
-	return commons.res_success("请求成功", json.loads(data.toJSON()))
-	
+
 def ajax_data_add(request, id = 0):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
@@ -256,9 +290,10 @@ def ajax_data_del(request, id):
 		return commons.res_fail(1, "需要登录才可以访问")
 
 	id = request.REQUEST.get("id")
-	data = Data.objects.get(id = id)
-	if not data:
+		
+	try:
+		data = Data.objects.get(id = id)
+		data.delete()
+		return commons.res_success("删除成功")
+	except:
 		return commons.res_fail(1, "该数据不存在")
-	
-	data.delete()
-	return commons.res_success("删除成功")
