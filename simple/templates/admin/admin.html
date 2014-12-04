@@ -11,6 +11,7 @@
 <body>
 <div id="main">
 	<div id="header">
+		<!--上面的菜单-->
 		<ul id="top-navigation">
 		</ul>
 	</div>
@@ -22,9 +23,12 @@
 			<!--内容部分-->
 		</div>
 		<div id="right-column">
-			<strong class="h">信息</strong>
+			<strong class="h">系统信息</strong>
 			<div class="box">
-				github:<a href="https://github.com/ouzhigang/django-ozgweb" target="_blank">https://github.com/ouzhigang/django-ozgweb</a>
+				<div>System:{{ res_data.system }}</div>
+				<div>Python:{{ res_data.python_version }}</div>
+				<div>Django:{{ res_data.django_version }}</div>
+				<div><a href="https://github.com/ouzhigang/django-ozgweb" target="_blank"><b>GitHub</b></a></div>
 			</div>
 	    </div>
 	</div>

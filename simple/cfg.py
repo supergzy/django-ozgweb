@@ -11,46 +11,44 @@ admin_menu_list = [
 		"selected": True, 
 		"child_menu": [
 			{
-				"id": 1,
+				"id": 2,
 				"name": "数据管理",
 				"child_menu": [
 					{
-						"id": 1,
+						"id": 5,
 						"name": "分类列表",
 					},
 					{
-						"id": 2,
+						"id": 6,
 						"name": "数据列表",
 					},
 				]
 			},
 			{
-				"id": 2,
+				"id": 3,
 				"name": "区域管理",
 				"child_menu": [
 					{
-						"id": 1,
+						"id": 7,
 						"name": "区域管理1",
 					},
 				]
 			},
 			{
-				"id": 3,
+				"id": 4,
 				"name": "管理员管理",
 				"child_menu": [
 					{
-						"id": 1,
+						"id": 8,
 						"name": "修改密码",
 					},
 					{
-						"id": 2,
+						"id": 9,
 						"name": "管理员列表",
 					},
 				]
 			},
 		]
 	},
-	{ "id": 2, "name": "测试菜单1"},
-	{ "id": 3, "name": "测试菜单2"},
-	{ "id": 4, "name": "测试菜单3"},
+	
 ]

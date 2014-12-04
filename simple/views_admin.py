@@ -4,6 +4,10 @@ import commons
 import cfg
 import json
 import time
+import sys
+import os
+import platform
+import django
 from DjangoCaptcha import Captcha
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -18,7 +22,7 @@ def index(request):
 		return HttpResponseRedirect("admin")
 	
 	res_data = {
-		"title": cfg.web_name
+		"title": cfg.web_name,
 	}
 
 	return commons.render_template(request, "admin/index.html", res_data);
@@ -28,10 +32,15 @@ def admin(request):
 	if not request.session.get("sess_admin", False):
 		return HttpResponseRedirect("index")
 	
+	system = platform.uname()
+	
 	res_data = {
-		"title": cfg.web_name
+		"title": cfg.web_name,
+		"django_version": django.get_version(),
+		"python_version": platform.python_version(),
+		"system": system[0] + " " + system[2],
 	}
-
+	
 	return commons.render_template(request, "admin/admin.html", res_data);
 
 def get_code(request):
