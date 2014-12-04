@@ -79,6 +79,13 @@ def ajax_logout(request):
 	del request.session["sess_admin"]
 	return commons.res_success("退出登录")
 
+def ajax_menu_list(request):
+	#需要登录才可以访问
+	if not request.session.get("sess_admin", False):
+		return commons.res_fail(1, "需要登录才可以访问")
+
+	return commons.res_success("请求成功", cfg.admin_menu_list)
+	
 def ajax_admin_list(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
@@ -171,8 +178,18 @@ def ajax_dataclass_list(request):
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
 
-	dataclass_list = Admin.objects.filter(parent_id = 0)
-	return commons.res_success("请求成功", dataclass_list)
+	dataclass_list = DataClass.objects.filter(parent_id = 0)
+	dataclass_list_json = []
+	for dataclass in dataclass_list:		
+		item = json.loads(dataclass.toJSON())
+		
+		child_count = DataClass.objects.filter(parent_id = item["id"]).count()
+		if child_count > 0:
+			item["children"] = commons.dataclass_list(item["id"])
+			
+		dataclass_list_json.append(item)
+	
+	return commons.res_success("请求成功", dataclass_list_json)
 
 def ajax_dataclass_get(request, id):
 	#需要登录才可以访问
@@ -181,7 +198,16 @@ def ajax_dataclass_get(request, id):
 		
 	try:
 		dataclass = DataClass.objects.get(id = id)
-		return commons.res_success("请求成功", json.loads(data.toJSON()))
+		
+		#该分类下的数据
+		#test = dataclass.data_set.all()
+		#print test.count()
+		
+		dataclass_json = json.loads(dataclass.toJSON())
+		if dataclass_json["parent_id"] != 0:
+			dataclass_json["parent"] = commons.dataclass_get(dataclass_json["parent_id"])
+		
+		return commons.res_success("请求成功", dataclass_json)
 	except:
 		return commons.res_fail(1, "找不到该数据")
 
