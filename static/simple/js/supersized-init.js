@@ -20,9 +20,9 @@
         // 组件
         slide_links        : 'blank',    // 个别环节为每张幻灯片（选项：假的，'民'，'名'，'空'）
         slides             : [    // 幻灯片影像
-                                 {image : '../../static/simple/images/alogin1.jpg'},
-                                 {image : '../../static/simple/images/alogin2.jpg'},
-                                 {image : '../../static/simple/images/alogin3.jpg'}
+                                 {image : '../../static/simple/images/a_login1.jpg'},
+                                 {image : '../../static/simple/images/a_login2.jpg'},
+                                 {image : '../../static/simple/images/a_login3.jpg'}
                        ]
 
     });

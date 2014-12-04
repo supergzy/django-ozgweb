@@ -56,4 +56,7 @@ $(function() {
 		}
 	);
 	
+	//中间的界面部分
+	$("#center-column").load("../../static/simple/admin_templates/main.html");
+	
 });
