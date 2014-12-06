@@ -64,3 +64,10 @@ def res_success(desc, data = None):
 #回应请求失败
 def res_fail(res_code, desc, data = None):
 	return res(res_code, desc, data)
+
+#计算总页数
+def page_count(count, page_size):
+	if(count % page_size == 0):
+		return (count / page_size)
+	else:
+		return (count / page_size) + 1;

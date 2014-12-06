@@ -4,9 +4,11 @@
 	<title>{{ res_data.title }} - 后台管理</title>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<style media="all" type="text/css">@import "../../static/simple/css/a_all.css";</style>
+	<style media="all" type="text/css">@import "../../static/simple/css/jquery/jqpagination.css";</style>
 	<script src="{{ cfg_jquery }}"></script>
-	<script src="../../static/simple/js/md5.js" ></script>
-	<script src="../../static/simple/js/a_admin.js" ></script>
+	<script src="../../static/simple/js/md5.js"></script>
+	<script src="../../static/simple/js/a_admin.js"></script>
+	<script src="../../static/simple/js/jquery/jquery.jqpagination.min.js"></script>
 </head>
 <body>
 <div id="main">
@@ -16,12 +18,22 @@
 		</ul>
 	</div>
 	<div id="middle">
+		<!--参数-->
+		{% csrf_token %}
+		<input type="hidden" id="menu_param" />
 		<!--左边菜单-->
 		<div id="left-column">			
 		</div>
 		<div id="center-column">
 			<!--内容部分-->
 		</div>
+		<div id="right-column">
+			<strong class="h">当前用户</strong>
+			<div class="box">
+				<div>用户名:{{ request.session.sess_admin.name }}</div>
+				<div><a href="#" id="logout"><b>退出登录</b></a></div>
+			</div>
+	    </div>
 		<div id="right-column">
 			<strong class="h">系统信息</strong>
 			<div class="box">

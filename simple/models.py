@@ -21,7 +21,7 @@ class Admin(models.Model):
 	id = models.AutoField(primary_key = True)
 	name = models.CharField(max_length = 50)
 	pwd = models.CharField(max_length = 50)
-	add_time = models.IntegerField()
+	add_time = models.IntegerField(default = 0)
 	
 	def toJSON(self):
 		return to_json(self)
@@ -37,9 +37,9 @@ class ArtSingle(models.Model):
 class DataClass(models.Model):
 	id = models.AutoField(primary_key = True)
 	name = models.CharField(max_length = 50)
-	parent_id = models.IntegerField()
-	sort = models.IntegerField()
-	type = models.IntegerField()
+	parent_id = models.IntegerField(default = 0)
+	sort = models.IntegerField(default = 0)
+	type = models.IntegerField(default = 0)
 
 	def toJSON(self):
 		return to_json(self)
@@ -48,11 +48,11 @@ class Data(models.Model):
 	id = models.AutoField(primary_key = True)
 	name = models.CharField(max_length = 50)
 	content = models.TextField()
-	add_time = models.IntegerField()
+	add_time = models.IntegerField(default = 0)
 	dataclass = models.ForeignKey(DataClass)
-	sort = models.IntegerField()
-	type = models.IntegerField()
-	hits = models.IntegerField()
+	sort = models.IntegerField(default = 0)
+	type = models.IntegerField(default = 0)
+	hits = models.IntegerField(default = 0)
 	picture = models.CharField(max_length = 50)
 
 	def toJSON(self):

@@ -100,8 +100,37 @@ def ajax_admin_list(request):
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
 	
-	admin_list = Admin.objects.all()
-	return commons.res_success("请求成功", admin_list)
+	#分页索引和每页显示数
+	page = 1
+	if request.REQUEST.get("page"):
+		page = int(request.REQUEST.get("page"))
+	page_size = cfg.page_size
+	if request.REQUEST.get("page_size"):
+		page_size = int(request.REQUEST.get("page_size"))
+	
+	total = Admin.objects.all().count()
+	page_count = commons.page_count(total, page_size)
+	
+	offset = (page - 1) * page_size
+	limit = offset + page_size
+	admin_list = Admin.objects.all().order_by("-id")[offset:limit]
+	
+	admin_list_json = []
+	for admin in admin_list:		
+		item = json.loads(admin.toJSON())
+		item["add_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item["add_time"]));
+		del item["pwd"]
+		admin_list_json.append(item)
+	
+	res_data = {
+		"page_size": page_size,
+		"page_count": page_count,
+		"total": total,
+		"page": page,
+		"list": admin_list_json,
+	}
+	
+	return commons.res_success("请求成功", res_data)
 
 def ajax_admin_add(request):
 	#需要登录才可以访问
@@ -110,6 +139,14 @@ def ajax_admin_add(request):
 	
 	name = request.REQUEST.get("name")
 	pwd = request.REQUEST.get("pwd")
+	pwd2 = request.REQUEST.get("pwd2")
+	
+	if name == "":
+		return commons.res_fail(1, "用户名不能为空")
+	if pwd == "":
+		return commons.res_fail(1, "密码不能为空")
+	if pwd != pwd2:
+		return commons.res_fail(1, "确认密码不正确")
 	
 	total = Admin.objects.filter(name = name).count()
 	if total > 0:
@@ -122,9 +159,9 @@ def ajax_admin_add(request):
 	)
 	admin.save()
 	
-	return commons.res_success("添加成功", admin)
+	return commons.res_success("添加成功", json.loads(admin.toJSON()))
 
-def ajax_admin_del(request, id):
+def ajax_admin_del(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
@@ -148,6 +185,10 @@ def ajax_admin_updatepwd(request):
 	pwd = request.REQUEST.get("pwd")
 	pwd2 = request.REQUEST.get("pwd2")
 	
+	if old_pwd == "":
+		return commons.res_fail(1, "旧密码不能为空")
+	if pwd == "":
+		return commons.res_fail(1, "新密码不能为空")
 	if pwd != pwd2:
 		return commons.res_fail(1, "确认密码不正确")
 	
@@ -160,14 +201,16 @@ def ajax_admin_updatepwd(request):
 	except:
 		return commons.res_fail(1, "旧密码不正确")
 
-def ajax_art_single_get(request, id):
+def ajax_art_single_get(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
 	
-	art = ArtSingle.objects.get(id = id)
-	return commons.res_success("请求成功", json.loads(atr.toJSON()))
+	id = request.REQUEST.get("id")
 	
+	obj = ArtSingle.objects.get(id = id)
+	return commons.res_success("请求成功", json.loads(obj.toJSON()))
+
 def ajax_art_single_update(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
@@ -176,10 +219,10 @@ def ajax_art_single_update(request):
 	id = request.REQUEST.get("id")
 	content = request.REQUEST.get("content")
 	
-	art = ArtSingle.objects.get(id = id)
-	art.content = content
+	obj = ArtSingle.objects.get(id = id)
+	obj.content = content
 	
-	art.save()
+	obj.save()
 	return commons.res_success("更新成功")
 
 def ajax_dataclass_list(request):
@@ -200,12 +243,13 @@ def ajax_dataclass_list(request):
 	
 	return commons.res_success("请求成功", dataclass_list_json)
 
-def ajax_dataclass_get(request, id):
+def ajax_dataclass_get(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
 		
 	try:
+		id = request.REQUEST.get("id")
 		dataclass = DataClass.objects.get(id = id)
 		
 		#该分类下的数据
@@ -220,13 +264,17 @@ def ajax_dataclass_get(request, id):
 	except:
 		return commons.res_fail(1, "找不到该数据")
 
-def ajax_dataclass_add(request, id = 0):
+def ajax_dataclass_add(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
 	
+	id = 0
+	if request.REQUEST.get("id"):
+		id = int(request.REQUEST.get("id"))
+	
 	name = request.REQUEST.get("name")
-	parent_id = request.REQUEST.get("parent_id")
+	parent_id = int(request.REQUEST.get("parent_id"))
 	
 	dataclass = None
 	if id != 0:
@@ -236,16 +284,16 @@ def ajax_dataclass_add(request, id = 0):
 	
 	dataclass.name = name
 	dataclass.parent_id = parent_id
-	data.sort = request.REQUEST.get("sort")
-	data.type = request.REQUEST.get("type")
-	data.save()
+	dataclass.sort = int(request.REQUEST.get("sort"))
+	dataclass.type = int(request.REQUEST.get("type"))
+	dataclass.save()
 	
 	if id != 0:
 		return commons.res_success("更新成功")
 	else:
 		return commons.res_success("添加成功")
 
-def ajax_dataclass_del(request, id):
+def ajax_dataclass_del(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
@@ -261,10 +309,18 @@ def ajax_dataclass_del(request, id):
 	except:
 		return commons.res_fail(1, "该数据不存在")
 
-def ajax_data_list(request, page = 1, page_size = 10):
+def ajax_data_list(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
+	
+	#分页索引和每页显示数
+	page = 1
+	if request.REQUEST.get("page"):
+		page = int(request.REQUEST.get("page"))
+	page_size = cfg.page_size
+	if request.REQUEST.get("page_size"):
+		page_size = int(request.REQUEST.get("page_size"))
 	
 	data_list = Data.objects.all()
 	data = []
@@ -274,21 +330,26 @@ def ajax_data_list(request, page = 1, page_size = 10):
 	
 	return commons.res_success("请求成功", data)
 
-def ajax_data_get(request, id):
+def ajax_data_get(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
 		
 	try:
+		id = request.REQUEST.get("id")
 		data = Data.objects.get(id = id)
 		return commons.res_success("请求成功", json.loads(data.toJSON()))
 	except:
 		return commons.res_fail(1, "找不到该数据")
 
-def ajax_data_add(request, id = 0):
+def ajax_data_add(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
+	
+	id = 0
+	if request.REQUEST.get("id"):
+		id = int(request.REQUEST.get("id"))
 	
 	name = request.REQUEST.get("name")
 	content = request.REQUEST.get("content")
@@ -319,7 +380,7 @@ def ajax_data_add(request, id = 0):
 	else:
 		return commons.res_success("添加成功")
 
-def ajax_data_del(request, id):
+def ajax_data_del(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")

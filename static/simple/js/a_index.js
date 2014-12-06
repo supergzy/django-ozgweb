@@ -25,8 +25,13 @@ $(function() {
 			success: function(data) {
 				if(data.code == 0)
 					location.href = "admin"; //登录成功				
-				else
+				else {
 					alert(data.desc);
+					
+					//刷新验证码
+					$(".getcode").attr("src", "get_code?rand=" + Math.random());
+					$(".Captcha").val("");
+				}
 			},
 			complete: function() {
 				$(".submit_button").removeAttr("disabled");

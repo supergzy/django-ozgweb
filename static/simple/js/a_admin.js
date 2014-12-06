@@ -1,6 +1,33 @@
 ﻿
 var menu_list = null;
 
+//获取左边小类菜单带的参数
+function get_menu_param(name) {
+	
+	var param_str = $("#menu_param").val();
+	
+	if(!param_str || param_str == "")
+		return null;
+	
+	var param = null;
+	
+	if(param_str.indexOf(",") > -1) {
+		var params = param_str.split(",");
+		for(var i in params) {
+			param = params[i].split(":");
+			
+			if(param[0] == name)
+				return param[1];
+		}
+	}
+	else
+		param = param_str.split(":");
+	
+	if(!param)
+		return null;
+	return param[1];
+}
+
 //上面的菜单的点击
 function top_menu_click() {
 	$("#top-navigation a").click(function() {
@@ -38,7 +65,25 @@ function left_menu_click() {
 //左边菜单（小类）的点击事件
 function left_menu2_click() {
 	$("#left-column a[id^='child2_menu_']").click(function() {
-		alert("qqq");
+		var id = $(this).attr("id").split("_")[2];
+		
+		//确定左边选中的小类
+		$.each(menu_list, function(i, item_obj) {
+			$.each(item_obj.child_menu, function(j, item_obj_child) {
+				$.each(item_obj_child.child_menu, function(k, item_obj_child2) {
+					if(item_obj_child2.id == id) {
+						
+						//参数部分
+						$("#menu_param").val("");
+						if(item_obj_child2.param)
+							$("#menu_param").val(item_obj_child2.param);
+					
+						$("#center-column").load("../../static/simple/admin_templates/" + item_obj_child2.url + "?random=" + Math.random());
+					}
+				});
+			});
+		});
+		
 		return false;
 	});
 }
@@ -107,6 +152,19 @@ $(function() {
 			left_menu2_click();
 		}
 	);
+	
+	//退出按钮
+	$("#logout").click(function() {
+		if(confirm("确认退出吗？")) {
+			$.getJSON(
+				"ajax_logout",
+				function(data) {
+					location.href = "index";
+				}
+			);
+		}
+		return false;
+	});
 	
 	//中间的界面部分
 	$("#center-column").load("../../static/simple/admin_templates/main.html");

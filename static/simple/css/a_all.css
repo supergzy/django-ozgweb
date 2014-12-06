@@ -5,7 +5,7 @@ body {
 	background:#BBD9EE;
   	color:#000;
 	font-family:tahoma,arial,sans-serif;
-	font-size:11px;
+	font-size:12px;
 }
 form {
 	margin:0;
@@ -300,7 +300,7 @@ table.listing .white td {
 }	
 table.listing .first {
 	border-left:0px solid #9097A9;
-	text-align:left;
+	text-align:center;
 }
 table.listing .last {
 	border-right:0px solid #9097A9;

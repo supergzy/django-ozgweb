@@ -93,3 +93,12 @@ STATICFILES_DIRS = (
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'simple/templates').replace('\\','/'),
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+#    'django.core.context_processors.auth',
+	'django.core.context_processors.request',
+#    'django.core.context_processors.debug',
+#    'django.core.context_processors.i18n',
+#    'django.core.context_processors.media',
+#    'tools.my_template_context_processors.request_filter',
+)
