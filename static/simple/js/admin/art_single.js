@@ -2,7 +2,7 @@
 var id;
 
 $(function() {
-	$( '#content' ).ckeditor(); 
+	$('#content').ckeditor();
 	
 	//获取参数
 	id = get_menu_param("id");
@@ -14,7 +14,8 @@ $(function() {
 			$("#art_name").html(data.data.name);
 			
 			$("#btn_submit").click(function() {
-				$.post("ajax_art_single_update",
+				$.post(
+					"ajax_art_single_update",
 					{ id: id, content: $("#content").val(), random: Math.random() },
 					function(data) {
 						alert(data.desc);

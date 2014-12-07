@@ -1,6 +1,4 @@
-﻿正在进行中...
-
-
+﻿
 ckeditor需要自行下载，对应目录django-ozgweb/static/simple/js/ckeditor
 
 

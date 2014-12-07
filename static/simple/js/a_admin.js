@@ -1,7 +1,7 @@
 ﻿
 var menu_list = null;
 
-//获取左边小类菜单带的参数
+//获取左边小类菜单、部分带参数页面的参数
 function get_menu_param(name) {
 	
 	var param_str = $("#menu_param").val();
@@ -18,14 +18,14 @@ function get_menu_param(name) {
 			
 			if(param[0] == name)
 				return param[1];
-		}
+		}		
 	}
-	else
+	else {
 		param = param_str.split(":");
-	
-	if(!param)
-		return null;
-	return param[1];
+		if(param[0] == name)
+			return param[1];
+	}
+	return null;
 }
 
 //上面的菜单的点击

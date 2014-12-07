@@ -38,11 +38,22 @@ function show_data(list) {
 	});
 }
 
+function update_page_nav(page_count) {
+	$('.pagination').jqPagination({
+		max_page: page_count,
+		paged: function(page) {
+			curr_page = page;
+			do_page();					
+		}
+	});
+}
+
 function do_page() {
 	$.getJSON(
 		"ajax_admin_list?page=" + curr_page + "&random=" + Math.random(),
 		function(data) {
 			show_data(data.data.list);
+			update_page_nav(data.data.page_count);			
 		}
 	);
 }
@@ -58,16 +69,8 @@ $(function() {
 				show_data(data.data.list);
 			}
 			else {
-				show_data(data.data.list);
-			
-				$('.pagination').jqPagination({
-					max_page: data.data.page_count,
-					paged: function(page) {
-						curr_page = page;
-						do_page();
-						
-					}
-				});
+				show_data(data.data.list);				
+				update_page_nav(data.data.page_count);
 			}
 		}
 	);

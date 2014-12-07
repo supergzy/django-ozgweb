@@ -229,8 +229,9 @@ def ajax_dataclass_list(request):
 	#需要登录才可以访问
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
-
-	dataclass_list = DataClass.objects.filter(parent_id = 0)
+	
+	type = int(request.REQUEST.get("type"))
+	dataclass_list = DataClass.objects.filter(type = type, parent_id = 0).order_by("-sort", "-id")
 	dataclass_list_json = []
 	for dataclass in dataclass_list:		
 		item = json.loads(dataclass.toJSON())
@@ -302,9 +303,14 @@ def ajax_dataclass_del(request):
 	try:
 		dataclass = DataClass.objects.get(id = id)
 		
-		#删除该分类下面的对应数据
+		child_count = DataClass.objects.filter(parent_id = dataclass.id).count()
+		if child_count > 0:
+			commons.dataclass_del(dataclass.id)
 		
+		#删除该分类下面的对应数据
+		Data.objects.filter(dataclass_id = dataclass.id).delete()
 		dataclass.delete()
+		
 		return commons.res_success("删除成功")
 	except:
 		return commons.res_fail(1, "该数据不存在")
@@ -322,13 +328,30 @@ def ajax_data_list(request):
 	if request.REQUEST.get("page_size"):
 		page_size = int(request.REQUEST.get("page_size"))
 	
-	data_list = Data.objects.all()
+	type = int(request.REQUEST.get("type"))
+	
+	total = Data.objects.filter(type = type).count()
+	page_count = commons.page_count(total, page_size)
+	
+	offset = (page - 1) * page_size
+	limit = offset + page_size
+	
+	data_list = Data.objects.filter(type = type).order_by("-sort", "-id")[offset:limit]
 	data = []
-	for i in data_list:		
+	for i in data_list:
 		item = json.loads(i.toJSON())
+		item["add_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item["add_time"]));
 		data.append(item)
 	
-	return commons.res_success("请求成功", data)
+	res_data = {
+		"page_size": page_size,
+		"page_count": page_count,
+		"total": total,
+		"page": page,
+		"list": data,
+	}
+	
+	return commons.res_success("请求成功", res_data)
 
 def ajax_data_get(request):
 	#需要登录才可以访问
@@ -368,9 +391,9 @@ def ajax_data_add(request):
 	data.name = name
 	data.content = content
 	data.add_time = int(time.time())
-	data.dataclass_id = request.REQUEST.get("dataclass_id")
-	data.sort = request.REQUEST.get("sort")
-	data.type = request.REQUEST.get("type")
+	data.dataclass_id = int(request.REQUEST.get("dataclass_id"))
+	data.sort = int(request.REQUEST.get("sort"))
+	data.type = int(request.REQUEST.get("type"))
 	data.hits = 0
 	data.picture = ""
 	data.save()
@@ -385,7 +408,7 @@ def ajax_data_del(request):
 	if not request.session.get("sess_admin", False):
 		return commons.res_fail(1, "需要登录才可以访问")
 
-	id = request.REQUEST.get("id")
+	id = int(request.REQUEST.get("id"))
 		
 	try:
 		data = Data.objects.get(id = id)
