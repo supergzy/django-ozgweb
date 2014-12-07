@@ -19,7 +19,7 @@ $(function() {
 			alert(msg);
 		else {
 			$.getJSON(
-				"ajax_admin_updatepwd?old_pwd=" + old_pwd + "&pwd=" + pwd + "&pwd2=" + pwd2 + "&random=" + Math.random(),
+				"ajax_admin_updatepwd?old_pwd=" + hex_md5(old_pwd) + "&pwd=" + hex_md5(pwd) + "&pwd2=" + hex_md5(pwd2) + "&random=" + Math.random(),
 				function(data) {
 					alert(data.desc);
 					$("#old_pwd").val("");

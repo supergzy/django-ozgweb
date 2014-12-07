@@ -193,7 +193,7 @@ def ajax_admin_updatepwd(request):
 		return commons.res_fail(1, "确认密码不正确")
 	
 	try:
-		admin = Admin.objects.filter(name = curr_admin.name, pwd = old_pwd)
+		admin = Admin.objects.get(name = curr_admin["name"], pwd = old_pwd)
 		admin.pwd = pwd
 		admin.save()
 	
