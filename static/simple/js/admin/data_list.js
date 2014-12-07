@@ -31,7 +31,8 @@ function show_data(list) {
 	$(".btn_edit").click(function() {
 		
 		var id = $(this).attr("id").split("_")[2];
-		$("#menu_param").val("type:" + get_menu_param("type") + ",id:" + id + ",page:" + curr_page);
+		var page = curr_page;
+		$("#menu_param").val("type:" + get_menu_param("type") + ",id:" + id + ",page:" + page);
 		
 		$("#center-column").load("../../static/simple/admin_templates/data_add.html?random=" + Math.random());
 		
@@ -83,8 +84,10 @@ function do_page() {
 $(function() {
 	
 	var url = null;
-	if(get_menu_param("page"))
+	if(get_menu_param("page")) {
+		curr_page = get_menu_param("page");
 		url = "ajax_data_list?type=" + get_menu_param("type") + "&page=" + get_menu_param("page") + "&random=" + Math.random();
+	}
 	else
 		url = "ajax_data_list?type=" + get_menu_param("type") + "&random=" + Math.random();
 
@@ -105,6 +108,7 @@ $(function() {
 	
 	//添加按钮
 	$("#add_btn").click(function() {
+		$("#menu_param").val("type:" + get_menu_param("type"));
 		$("#center-column").load("../../static/simple/admin_templates/data_add.html?random=" + Math.random());
 		return false;
 	});

@@ -60,7 +60,16 @@ $(function() {
 				"ajax_data_add",
 				obj,
 				function(data) {
-					$("#menu_param").val("type:" + get_menu_param("type") + ",page:" + get_menu_param("page"));
+					
+					if(!get_menu_param("id"))
+						$("#menu_param").val("type:" + get_menu_param("type"));
+					else {
+						var page = 1;
+						if(get_menu_param("page"))
+							page = get_menu_param("page");
+						$("#menu_param").val("type:" + get_menu_param("type") + ",page:" + page);
+					}
+					
 					$("#center-column").load("../../static/simple/admin_templates/data_list.html?random=" + Math.random());
 				},
 				"json"
