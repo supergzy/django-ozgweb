@@ -45,9 +45,14 @@ $(function() {
 				url,
 				function(data) {
 					
-					//重置参数
-					$("#menu_param").val("type:" + get_menu_param("type"));
-					$("#center-column").load("../../static/simple/admin_templates/dataclass_list.html?random=" + Math.random());
+					if(data.code == 1)
+						alert(data.desc);
+					else {
+						//重置参数
+						$("#menu_param").val("type:" + get_menu_param("type"));
+						$("#center-column").load("../../static/simple/admin_templates/dataclass_list.html?random=" + Math.random());
+					}
+						
 				}
 			);
 		}	

@@ -276,9 +276,12 @@ def ajax_dataclass_add(request):
 	
 	name = request.REQUEST.get("name")
 	parent_id = int(request.REQUEST.get("parent_id"))
-	
+			
 	dataclass = None
 	if id != 0:
+		if id == parent_id:
+			return commons.res_fail(1, "父级分类不能为当前选中分类")
+		
 		dataclass = DataClass.objects.get(id = id)
 	else:
 		dataclass = DataClass()
