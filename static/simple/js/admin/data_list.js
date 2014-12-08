@@ -1,5 +1,6 @@
 ﻿
 var curr_page = 1; //当前页
+var request_data = true; //这个变量是为了防止请求完数据后，更新分页导航数据时反复请求数据
 
 function show_data(list) {
 	$(".listing > tbody").empty();
@@ -55,20 +56,31 @@ function show_data(list) {
 	
 }
 
-function update_page_nav(page_count) {
-
-	var current_page = 1;
-	if(get_menu_param("page"))
-		current_page = get_menu_param("page");
-
-	$('.pagination').jqPagination({
-		max_page: page_count,
-		current_page: current_page,
-		paged: function(page) {
-			curr_page = page;
-			do_page();					
-		}
-	});
+function update_page_nav(data) {
+				
+	if(get_menu_param("page")) {
+		//获取了当前页后，需要把已保存的当前页删除
+		curr_page = get_menu_param("page");
+		$("#menu_param").val("type:" + get_menu_param("type"));
+	}
+	
+	var opt = {
+		callback: function(page_index, jq) {
+			curr_page = page_index + 1;
+			if(request_data) {
+				request_data = false;
+				do_page();
+			}
+			else
+				request_data = true;
+			return false;
+		},
+		items_per_page: data.page_size,
+		current_page: curr_page - 1,
+		num_edge_entries: 1
+	};
+	
+	$("#Pagination").pagination(data.total, opt);
 }
 
 function do_page() {
@@ -76,7 +88,7 @@ function do_page() {
 		"ajax_data_list?type=" + get_menu_param("type") + "&page=" + curr_page + "&random=" + Math.random(),
 		function(data) {
 			show_data(data.data.list);
-			update_page_nav(data.data.page_count);
+			update_page_nav(data.data);
 		}
 	);
 }
@@ -101,7 +113,7 @@ $(function() {
 			}
 			else {
 				show_data(data.data.list);
-				update_page_nav(data.data.page_count);
+				update_page_nav(data.data);
 			}
 		}
 	);
