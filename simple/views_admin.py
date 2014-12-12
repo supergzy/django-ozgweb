@@ -21,11 +21,7 @@ def index(request):
 	if request.session.get("sess_admin", False):
 		return HttpResponseRedirect("admin")
 	
-	res_data = {
-		"title": cfg.web_name,
-	}
-
-	return commons.render_template(request, "admin/index.html", res_data);
+	return commons.render_template(request, "admin/index.html");
 
 def admin(request):
 	#需要登录才可以访问
@@ -107,28 +103,8 @@ def ajax_admin_list(request):
 	page_size = cfg.page_size
 	if request.REQUEST.get("page_size"):
 		page_size = int(request.REQUEST.get("page_size"))
-	
-	total = Admin.objects.all().count()
-	page_count = commons.page_count(total, page_size)
-	
-	offset = (page - 1) * page_size
-	limit = offset + page_size
-	admin_list = Admin.objects.all().order_by("-id")[offset:limit]
-	
-	admin_list_json = []
-	for admin in admin_list:		
-		item = json.loads(admin.toJSON())
-		item["add_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item["add_time"]));
-		del item["pwd"]
-		admin_list_json.append(item)
-	
-	res_data = {
-		"page_size": page_size,
-		"page_count": page_count,
-		"total": total,
-		"page": page,
-		"list": admin_list_json,
-	}
+
+	res_data = Admin.getList(page, page_size)
 	
 	return commons.res_success("请求成功", res_data)
 
@@ -238,7 +214,7 @@ def ajax_dataclass_list(request):
 		
 		child_count = DataClass.objects.filter(parent_id = item["id"]).count()
 		if child_count > 0:
-			item["children"] = commons.dataclass_list(item["id"])
+			item["children"] = DataClass.listById(item["id"])
 			
 		dataclass_list_json.append(item)
 	
@@ -259,7 +235,7 @@ def ajax_dataclass_get(request):
 		
 		dataclass_json = json.loads(dataclass.toJSON())
 		if dataclass_json["parent_id"] != 0:
-			dataclass_json["parent"] = commons.dataclass_get(dataclass_json["parent_id"])
+			dataclass_json["parent"] = DataClass.getById(dataclass_json["parent_id"])
 		
 		return commons.res_success("请求成功", dataclass_json)
 	except:
@@ -308,7 +284,7 @@ def ajax_dataclass_del(request):
 		
 		child_count = DataClass.objects.filter(parent_id = dataclass.id).count()
 		if child_count > 0:
-			commons.dataclass_del(dataclass.id)
+			DataClass.deleteById(dataclass.id)
 		
 		#删除该分类下面的对应数据
 		Data.objects.filter(dataclass_id = dataclass.id).delete()
@@ -333,27 +309,7 @@ def ajax_data_list(request):
 	
 	type = int(request.REQUEST.get("type"))
 	
-	total = Data.objects.filter(type = type).count()
-	page_count = commons.page_count(total, page_size)
-	
-	offset = (page - 1) * page_size
-	limit = offset + page_size
-	
-	data_list = Data.objects.filter(type = type).order_by("-sort", "-id")[offset:limit]
-	data = []
-	for i in data_list:
-		item = json.loads(i.toJSON())
-		item["add_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item["add_time"]));
-		data.append(item)
-	
-	res_data = {
-		"page_size": page_size,
-		"page_count": page_count,
-		"total": total,
-		"page": page,
-		"list": data,
-	}
-	
+	res_data = Data.getList(page, page_size, type)
 	return commons.res_success("请求成功", res_data)
 
 def ajax_data_get(request):
