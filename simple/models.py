@@ -82,7 +82,7 @@ class DataClass(models.Model):
 		for dc in dc_list:
 			child_count = DataClass.objects.filter(parent_id = dc.id).count()
 			if child_count > 0:
-				dataclass_del(dc.id)
+				DataClass.deleteById(dc.id)
 		
 			#删除该分类下面的对应数据
 			Data.objects.filter(dataclass_id = dc.id).delete()
@@ -107,7 +107,7 @@ class DataClass(models.Model):
 				
 			child_count = DataClass.objects.filter(parent_id = item["id"]).count()
 			if child_count > 0:
-				item["children"] = dataclass_list(item["id"])
+				item["children"] = DataClass.listById(item["id"])
 			
 			dc_list_json.append(item)
 
