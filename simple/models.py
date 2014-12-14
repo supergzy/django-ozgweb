@@ -94,7 +94,7 @@ class DataClass(models.Model):
 		dataclass = DataClass.objects.get(id = id)
 		dataclass_json = json.loads(dataclass.toJSON())	
 		if dataclass_json["parent_id"] != 0:
-			dataclass_json["parent"] = dataclass_get(dataclass_json["parent_id"])	
+			dataclass_json["parent"] = DataClass.getById(dataclass_json["parent_id"])	
 		return dataclass_json
 		
 	#递归获取该分类下的分类(返回list)，静态方法
