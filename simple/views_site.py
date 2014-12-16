@@ -1,6 +1,5 @@
-﻿#coding:utf-8
-
-import commons
+﻿
+from . import commons
 
 def index(request):
 

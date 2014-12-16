@@ -1,9 +1,8 @@
-﻿#coding:utf-8
-
+﻿
 from django.db import models
 import json
 import time
-import commons
+from . import commons
 
 def to_json(obj):
 	fields = []

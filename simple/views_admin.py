@@ -1,20 +1,18 @@
-﻿#coding:utf-8
-
-import commons
-import cfg
+﻿
+from . import commons
+from . import cfg
 import json
 import time
 import sys
 import os
 import platform
 import django
-from DjangoCaptcha import Captcha
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from models import Admin
-from models import ArtSingle
-from models import DataClass
-from models import Data
+from .models import Admin
+from .models import ArtSingle
+from .models import DataClass
+from .models import Data
 
 def index(request):
 	#如果已登录就直接跳到管理界面
@@ -40,7 +38,7 @@ def admin(request):
 	return commons.render_template(request, "admin/admin.html", res_data);
 
 def get_code(request):
-	ca = Captcha(request)
+	ca = commons.Captcha(request)
 	#ca.words = ['hello', 'world', 'helloworld']
 	ca.type = 'number' #or word
 	ca.img_width = 150
@@ -50,11 +48,11 @@ def get_code(request):
 def ajax_login(request):
 
 	imgcode = request.GET.get("code")
-	print imgcode
+	print(imgcode)
 	if not imgcode or imgcode == "":
 		return commons.res_fail(1, "验证码不能为空")
 
-	ca = Captcha(request)
+	ca = commons.Captcha(request)
 	if ca.check(imgcode):
 		
 		name = request.GET.get("name")
@@ -231,7 +229,7 @@ def ajax_dataclass_get(request):
 		
 		#该分类下的数据
 		#test = dataclass.data_set.all()
-		#print test.count()
+		#print(test.count())
 		
 		dataclass_json = json.loads(dataclass.toJSON())
 		if dataclass_json["parent_id"] != 0:

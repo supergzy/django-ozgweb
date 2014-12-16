@@ -2,9 +2,6 @@
 ckeditor需要自行下载，对应目录django-ozgweb/static/simple/js/ckeditor
 
 
-安装验证码部分请查阅：https://github.com/tianyu0915/DjangoCaptcha
-
-
 直接运行python manage.py runserver
 
 

@@ -1,5 +1,4 @@
-﻿#coding:utf-8
-
+﻿
 web_name = "django-ozgweb"
 jquery = "http://ajax.useso.com/ajax/libs/jquery/2.1.1/jquery.min.js" #jquery2.0以上
 page_size = 16
