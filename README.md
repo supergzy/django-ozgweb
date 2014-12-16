@@ -1,4 +1,6 @@
-﻿
+﻿运行环境为Python2.7
+
+
 ckeditor需要自行下载，对应目录django-ozgweb/static/simple/js/ckeditor
 
 
