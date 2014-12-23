@@ -346,14 +346,14 @@ def ajax_data_add(request):
 		data = Data.objects.get(id = id)
 	else:
 		data = Data()
+		data.hits = 0
+		data.add_time = int(time.time())
 	
 	data.name = name
-	data.content = content
-	data.add_time = int(time.time())
+	data.content = content	
 	data.dataclass_id = int(request.REQUEST.get("dataclass_id"))
 	data.sort = int(request.REQUEST.get("sort"))
-	data.type = int(request.REQUEST.get("type"))
-	data.hits = 0
+	data.type = int(request.REQUEST.get("type"))	
 	data.picture = ""
 	data.save()
 	
