@@ -21,7 +21,7 @@ def index(request):
 	if request.session.get("sess_admin", False):
 		return HttpResponseRedirect("admin")
 	
-	return commons.render_template(request, "admin/index.html");
+	return commons.render_template(request, "admin/index.html")
 
 def admin(request):
 	#需要登录才可以访问
@@ -37,7 +37,7 @@ def admin(request):
 		"system": system[0] + " " + system[2],
 	}
 	
-	return commons.render_template(request, "admin/admin.html", res_data);
+	return commons.render_template(request, "admin/admin.html", res_data)
 
 def get_code(request):
 	ca = Captcha(request)
