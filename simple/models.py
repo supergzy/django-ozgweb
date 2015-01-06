@@ -40,7 +40,7 @@ class Admin(models.Model):
 		admin_list_json = []
 		for admin in admin_list:		
 			item = json.loads(admin.toJSON())
-			item["add_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item["add_time"]));
+			item["add_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item["add_time"]))
 			
 			#移除密码
 			del item["pwd"]
@@ -139,7 +139,7 @@ class Data(models.Model):
 		data = []
 		for i in data_list:
 			item = json.loads(i.toJSON())
-			item["add_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item["add_time"]));
+			item["add_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item["add_time"]))
 			data.append(item)
 	
 		data = {

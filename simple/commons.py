@@ -205,4 +205,4 @@ def page_count(count, page_size):
 	if(count % page_size == 0):
 		return (count // page_size)
 	else:
-		return (count // page_size) + 1;
+		return (count // page_size) + 1
